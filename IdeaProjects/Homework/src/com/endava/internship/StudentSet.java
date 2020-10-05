@@ -29,7 +29,7 @@ public class StudentSet implements Set<Student> {
 
     }
 
-    private void nodeInsert(Node node){
+    private void nodeInsert(Node node, Node root){
 
         if (root==null){
             setRoot(node);
@@ -37,7 +37,7 @@ public class StudentSet implements Set<Student> {
         }
         if(node.getStudent().getName().compareTo(root.getStudent().getName())<0){ //Comparing the names of the student
             if(root.getLeftChild()!=null){ //Look if we are not on a leaf
-                nodeInsert(root.getLeftChild()); // If this is not a laf,go further
+                nodeInsert(node, root.getLeftChild()); // If this is not a laf,go further
             }
             else{
 
@@ -46,7 +46,7 @@ public class StudentSet implements Set<Student> {
         }
         else{
             if(root.getRightChild()!=null){
-                nodeInsert(root.getRightChild());
+                nodeInsert(node, root.getRightChild());
             }else{
                 root.setRightChild(node);
             }
@@ -73,8 +73,28 @@ public class StudentSet implements Set<Student> {
     @Override
     public boolean contains(Object o) {
 
+        if (o == null || getClass() != o.getClass()) return false;
 
-        return false;
+        Node currentNode = root;
+        Student student = (Student) o;
+
+        while(currentNode!=null || !currentNode.getStudent().equals(student)) { // Searching until it finds the node or null
+            if (currentNode.getStudent().getName().compareTo(student.getName()) < 0) {
+
+                currentNode = currentNode.getLeftChild(); // Updates the currentNode to continue searching
+            } else {
+                currentNode = currentNode.getRightChild();
+            }
+
+
+        }
+        if(currentNode == null){
+            return false;
+        }
+        else{
+            return true;
+        }
+
     }
 
     @Override
@@ -94,19 +114,38 @@ public class StudentSet implements Set<Student> {
 
     @Override
     public boolean add(Student student) {
-        Node node = new Node(student, null, null);
-        if(this.contains(node)) {
+        Node node = new Node(student, null, null); //Creates a new node
+      /*  if(this.contains(node)) { // Search if it doesn't contain the node
             return false;
-        }
-        this.nodeInsert(node);
+        }*/
+        this.nodeInsert(node,root);
 
         return true;
     }
 
     @Override
     public boolean remove(Object o) {
-        Node current=root;
-        Node parent = root;
+        Node currentNode=root;
+        Node parentNode = root;
+        Student student = (Student) o;
+        while(currentNode!=null || !currentNode.getStudent().equals(student)){ // Searching till it finds the node or null
+            if(currentNode.getStudent().getName().compareTo(student.getName())<0){
+                parentNode = currentNode; // Updates the parentNode
+                currentNode = currentNode.getLeftChild(); // Updates the currentNode to continue searching
+            }else {
+                parentNode = currentNode;
+                currentNode = currentNode.getRightChild();
+            }
+
+
+        }
+        if(currentNode == null){
+
+            return false;
+        }
+        else {
+
+        }
 
 
         return false;
@@ -114,21 +153,25 @@ public class StudentSet implements Set<Student> {
 
     @Override
     public boolean containsAll(Collection<?> c) {
+
         return false;
     }
 
     @Override
     public boolean addAll(Collection<? extends Student> c) {
+
         return false;
     }
 
     @Override
     public boolean retainAll(Collection<?> c) {
+
         return false;
     }
 
     @Override
     public boolean removeAll(Collection<?> c) {
+
         return false;
     }
 

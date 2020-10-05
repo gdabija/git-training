@@ -7,5 +7,6 @@ public class University {
         this.age=age;
         this.name = name;
         this.rectorsName = rectorsName;
+
     }
 }
