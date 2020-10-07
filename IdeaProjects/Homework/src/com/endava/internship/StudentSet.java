@@ -2,15 +2,29 @@ package com.endava.internship;
 
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.ListIterator;
 import java.util.Set;
 
 public class StudentSet implements Set<Student> {
-    private LinkedList<Node> list = new LinkedList<>();
     private Node root;
     private Integer MAX_VALUE_TREE = 0;
 
+    private Node getSuccesor(Node delNode){
+        Node succesorParent = delNode;
+        Node succesor = delNode;
+        Node current = delNode.getRightChild();
+        while(current!=null){
+            succesorParent = succesor;
+            succesor = current;
+            current = current.getLeftChild();
 
+        }
+        if(succesor!= delNode.getRightChild()){
+            succesorParent.setLeftChild(succesor.getRightChild());
+            succesor.setRightChild(delNode.getRightChild());
+        }
+        return succesor;
+    }
 
     private void setRoot(Node node){
 
@@ -29,13 +43,13 @@ public class StudentSet implements Set<Student> {
 
     }
 
-    private void nodeInsert(Node node, Node root){
+    private void nodeInsert(Node node, Node parent){
 
         if (root==null){
             setRoot(node);
             return;
         }
-        if(node.getStudent().getName().compareTo(root.getStudent().getName())<0){ //Comparing the names of the student
+        if(node.getStudent().compareTo(root.getStudent())<0){ //Comparing the names of the student
             if(root.getLeftChild()!=null){ //Look if we are not on a leaf
                 nodeInsert(node, root.getLeftChild()); // If this is not a laf,go further
             }
@@ -56,7 +70,7 @@ public class StudentSet implements Set<Student> {
 
     @Override
     public int size() {
-        MAX_VALUE_TREE =0;
+        MAX_VALUE_TREE = 0;
         this.treePath(root);
         return MAX_VALUE_TREE;
     }
@@ -79,13 +93,12 @@ public class StudentSet implements Set<Student> {
         Student student = (Student) o;
 
         while(currentNode!=null || !currentNode.getStudent().equals(student)) { // Searching until it finds the node or null
-            if (currentNode.getStudent().getName().compareTo(student.getName()) < 0) {
+            if (currentNode.getStudent().compareTo(student) < 0) {
 
                 currentNode = currentNode.getLeftChild(); // Updates the currentNode to continue searching
             } else {
                 currentNode = currentNode.getRightChild();
             }
-
 
         }
         if(currentNode == null){
@@ -99,11 +112,59 @@ public class StudentSet implements Set<Student> {
 
     @Override
     public Iterator<Student> iterator() {
-        return null;
+        return new ListIterator<Student>() {
+            @Override
+            public boolean hasNext() {
+                return false;
+            }
+
+            @Override
+            public Student next() {
+                return null;
+            }
+
+            @Override
+            public boolean hasPrevious() {
+                return false;
+            }
+
+            @Override
+            public Student previous() {
+                return null;
+            }
+
+            @Override
+            public int nextIndex() {
+                return 0;
+            }
+
+            @Override
+            public int previousIndex() {
+                return 0;
+            }
+
+            @Override
+            public void remove() {
+
+            }
+
+            @Override
+            public void set(Student student) {
+
+            }
+
+            @Override
+            public void add(Student student) {
+
+            }
+        };
     }
+
 
     @Override
     public Object[] toArray() {
+
+
         return new Object[0];
     }
 
@@ -115,9 +176,9 @@ public class StudentSet implements Set<Student> {
     @Override
     public boolean add(Student student) {
         Node node = new Node(student, null, null); //Creates a new node
-      /*  if(this.contains(node)) { // Search if it doesn't contain the node
+        if(this.contains(node)) { // Search if it doesn't contain the node
             return false;
-        }*/
+        }
         this.nodeInsert(node,root);
 
         return true;
@@ -125,30 +186,67 @@ public class StudentSet implements Set<Student> {
 
     @Override
     public boolean remove(Object o) {
-        Node currentNode=root;
+        Node currentNode = root;
         Node parentNode = root;
+        boolean isLeftChild = true;
         Student student = (Student) o;
         while(currentNode!=null || !currentNode.getStudent().equals(student)){ // Searching till it finds the node or null
-            if(currentNode.getStudent().getName().compareTo(student.getName())<0){
-                parentNode = currentNode; // Updates the parentNode
+            parentNode = currentNode; // Updates the parentNode
+            if(currentNode.getStudent().compareTo(student)<0){
+                isLeftChild = true;
                 currentNode = currentNode.getLeftChild(); // Updates the currentNode to continue searching
             }else {
-                parentNode = currentNode;
+                isLeftChild = false;
                 currentNode = currentNode.getRightChild();
             }
 
-
         }
         if(currentNode == null){
-
             return false;
         }
-        else {
+        if(currentNode.getLeftChild()==null && currentNode.getRightChild()==null){
+            if(currentNode == root){
+                root = null;
+            }else if (isLeftChild){
+                parentNode.setLeftChild(null);
+            }else{
+                parentNode.setRightChild(null);
+            }
+        }else if (currentNode.getRightChild()==null){
+            if(currentNode==root){
+                root = currentNode.getLeftChild();
+            }else if (isLeftChild){
+                parentNode.setLeftChild(currentNode.getLeftChild());
+            }else {
+                parentNode.setRightChild(currentNode.getLeftChild());
+            }
 
+        }else if (currentNode.getLeftChild()== null){
+            if(currentNode == root){
+                root = currentNode.getRightChild();
+            }else if(isLeftChild){
+                parentNode.setLeftChild(currentNode.getRightChild());
+            }else{
+                parentNode.setRightChild(currentNode.getRightChild());
+            }
+
+        }
+        else {
+            Node succesor = getSuccesor(currentNode);
+
+            if (currentNode == root){
+                root = succesor;
+            }else if (isLeftChild){
+                parentNode.setLeftChild(succesor);
+            }else{
+                parentNode.setRightChild(succesor);
+            }
+
+            succesor.setLeftChild(currentNode.getLeftChild());
         }
 
 
-        return false;
+        return true;
     }
 
     @Override

@@ -3,7 +3,7 @@ package com.endava.internship;
 import java.time.LocalDate;
 import java.util.Objects;
 
-public class Student {
+public class Student implements Comparable<Student>{
     private String name;
     private final LocalDate dateOfBirth;
     private String details;
@@ -36,4 +36,17 @@ public class Student {
     public int hashCode() {
         return Objects.hash(name, dateOfBirth);
     }
+
+    @Override
+    public int compareTo(Student otherStudent) {
+        //compare name
+        int nameDiff = name.compareTo(otherStudent.name);
+        if(nameDiff != 0){
+            return nameDiff;
+        }
+        //names are equals compare age
+        return dateOfBirth.compareTo(otherStudent.dateOfBirth);
+        }
+
+
 }
