@@ -5,31 +5,33 @@ class Node {
     private Node leftChild;
     private Node rightChild;
 
-    public Node(Student student, Node leftChild,Node rightChild){
+    public Node(Student student, Node leftChild, Node rightChild) {
         this.leftChild = leftChild;
         this.rightChild = rightChild;
         this.student = student;
     }
-    public Node getLeftChild(){
-        return  this.leftChild;
-    }
-    public Node getRightChild(){
-        return this.rightChild;
-    }
 
-    public void setStudent(Student student) {
-        this.student = student;
+    public Node getLeftChild() {
+        return this.leftChild;
     }
 
     public void setLeftChild(Node leftChild) {
         this.leftChild = leftChild;
     }
 
+    public Node getRightChild() {
+        return this.rightChild;
+    }
+
     public void setRightChild(Node rightChild) {
         this.rightChild = rightChild;
     }
 
-    public Student getStudent(){
-        return  this.student;
+    public Student getStudent() {
+        return this.student;
+    }
+
+    public void setStudent(Student student) {
+        this.student = student;
     }
 }

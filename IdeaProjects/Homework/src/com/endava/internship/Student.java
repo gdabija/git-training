@@ -3,9 +3,9 @@ package com.endava.internship;
 import java.time.LocalDate;
 import java.util.Objects;
 
-public class Student implements Comparable<Student>{
-    private String name;
+public class Student implements Comparable<Student> {
     private final LocalDate dateOfBirth;
+    private String name;
     private String details;
 
     public Student(String name, LocalDate dateOfBirth, String details) {
@@ -15,13 +15,16 @@ public class Student implements Comparable<Student>{
     }
 
     public String getName() {
-        return name; }
+        return name;
+    }
 
     public LocalDate getDateOfBirth() {
-        return dateOfBirth; }
+        return dateOfBirth;
+    }
 
     public String getDetails() {
-        return details; }
+        return details;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -41,12 +44,12 @@ public class Student implements Comparable<Student>{
     public int compareTo(Student otherStudent) {
         //compare name
         int nameDiff = name.compareTo(otherStudent.name);
-        if(nameDiff != 0){
+        if (nameDiff != 0) {
             return nameDiff;
         }
         //names are equals compare age
         return dateOfBirth.compareTo(otherStudent.dateOfBirth);
-        }
+    }
 
 
 }

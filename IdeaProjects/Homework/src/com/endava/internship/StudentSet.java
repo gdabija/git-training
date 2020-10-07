@@ -9,33 +9,32 @@ public class StudentSet implements Set<Student> {
     private Node root;
     private Integer MAX_VALUE_TREE = 0;
 
-    private Node getSuccesor(Node delNode){
+    private Node getSuccesor(Node delNode) {
         Node succesorParent = delNode;
         Node succesor = delNode;
         Node current = delNode.getRightChild();
-        while(current!=null){
+        while (current != null) {
             succesorParent = succesor;
             succesor = current;
             current = current.getLeftChild();
 
         }
-        if(succesor!= delNode.getRightChild()){
+        if (succesor != delNode.getRightChild()) {
             succesorParent.setLeftChild(succesor.getRightChild());
             succesor.setRightChild(delNode.getRightChild());
         }
         return succesor;
     }
 
-    private void setRoot(Node node){
+    private void setRoot(Node node) {
 
-        this.root=node;
+        this.root = node;
     }
 
-    private void treePath (Node root){
-        if (root==null){
+    private void treePath(Node root) {
+        if (root == null) {
             return;
-        }
-        else{
+        } else {
             MAX_VALUE_TREE++;
             treePath(root.getLeftChild());
             treePath(root.getRightChild());
@@ -43,25 +42,22 @@ public class StudentSet implements Set<Student> {
 
     }
 
-    private void nodeInsert(Node node, Node parent){
+    private void nodeInsert(Node node, Node parent) {
 
-        if (root==null){
+        if (root == null) {
             setRoot(node);
             return;
         }
-        if(node.getStudent().compareTo(parent.getStudent())<0){ //Comparing the names of the student
-            if(parent.getLeftChild()!=null){ //Look if we are not on a leaf
+        if (node.getStudent().compareTo(parent.getStudent()) < 0) { //Comparing the names of the student
+            if (parent.getLeftChild() != null) { //Look if we are not on a leaf
                 nodeInsert(node, parent.getLeftChild()); // If this is not a laf,go further
-            }
-            else{
-
+            } else {
                 parent.setLeftChild(node);
             }
-        }
-        else{
-            if(parent.getRightChild()!=null){
+        } else {
+            if (parent.getRightChild() != null) {
                 nodeInsert(node, parent.getRightChild());
-            }else{
+            } else {
                 parent.setRightChild(node);
             }
         }
@@ -77,37 +73,33 @@ public class StudentSet implements Set<Student> {
 
     @Override
     public boolean isEmpty() {
-    if(this.size()==0){
-        return true;
-    }else{
-        return false;
+        if (this.size() == 0) {
+            return true;
+        } else {
+            return false;
         }
     }
 
     @Override
     public boolean contains(Object o) {
 
-        if (o == null ) return false;
-        if(root == null) return false;
+        if (o == null) return false;
+        if (root == null) return false;
 
         Node currentNode = root;
         Student student = (Student) o;
-        if(currentNode == null){
-            return false;
-        }
-        while(currentNode!=null || !currentNode.getStudent().equals(o)) { // Searching until it finds the node or null
-            if (currentNode.getStudent().compareTo(student) < 0) {
 
+        while ((currentNode != null) && (!currentNode.getStudent().equals(o))) { // Searching until it finds the node or null
+            if (currentNode.getStudent().compareTo(student) > 0) {
                 currentNode = currentNode.getLeftChild(); // Updates the currentNode to continue searching
             } else {
                 currentNode = currentNode.getRightChild();
             }
 
         }
-        if(currentNode == null){
+        if (currentNode == null) {
             return false;
-        }
-        else{
+        } else {
             return true;
         }
 
@@ -181,10 +173,10 @@ public class StudentSet implements Set<Student> {
     public boolean add(Student student) {
         Node node = new Node(student, null, null); //Creates a new node
 
-        if(this.contains(student)) { // Search if it doesn't contain the node
+        if (this.contains(student)) { // Search if it doesn't contain the node
             return false;
         }
-        this.nodeInsert(node,root);
+        this.nodeInsert(node, root);
 
         return true;
     }
@@ -195,55 +187,54 @@ public class StudentSet implements Set<Student> {
         Node parentNode = root;
         boolean isLeftChild = true;
         Student student = (Student) o;
-        while(currentNode!=null || !currentNode.getStudent().equals(student)){ // Searching till it finds the node or null
+        while (currentNode != null || !currentNode.getStudent().equals(student)) { // Searching till it finds the node or null
             parentNode = currentNode; // Updates the parentNode
-            if(currentNode.getStudent().compareTo(student)<0){
+            if (currentNode.getStudent().compareTo(student) < 0) {
                 isLeftChild = true;
                 currentNode = currentNode.getLeftChild(); // Updates the currentNode to continue searching
-            }else {
+            } else {
                 isLeftChild = false;
                 currentNode = currentNode.getRightChild();
             }
 
         }
-        if(currentNode == null){
+        if (currentNode == null) {
             return false;
         }
-        if(currentNode.getLeftChild()==null && currentNode.getRightChild()==null){
-            if(currentNode == root){
+        if (currentNode.getLeftChild() == null && currentNode.getRightChild() == null) {
+            if (currentNode == root) {
                 root = null;
-            }else if (isLeftChild){
+            } else if (isLeftChild) {
                 parentNode.setLeftChild(null);
-            }else{
+            } else {
                 parentNode.setRightChild(null);
             }
-        }else if (currentNode.getRightChild()==null){
-            if(currentNode==root){
+        } else if (currentNode.getRightChild() == null) {
+            if (currentNode == root) {
                 root = currentNode.getLeftChild();
-            }else if (isLeftChild){
+            } else if (isLeftChild) {
                 parentNode.setLeftChild(currentNode.getLeftChild());
-            }else {
+            } else {
                 parentNode.setRightChild(currentNode.getLeftChild());
             }
 
-        }else if (currentNode.getLeftChild()== null){
-            if(currentNode == root){
+        } else if (currentNode.getLeftChild() == null) {
+            if (currentNode == root) {
                 root = currentNode.getRightChild();
-            }else if(isLeftChild){
+            } else if (isLeftChild) {
                 parentNode.setLeftChild(currentNode.getRightChild());
-            }else{
+            } else {
                 parentNode.setRightChild(currentNode.getRightChild());
             }
 
-        }
-        else {
+        } else {
             Node succesor = getSuccesor(currentNode);
 
-            if (currentNode == root){
+            if (currentNode == root) {
                 root = succesor;
-            }else if (isLeftChild){
+            } else if (isLeftChild) {
                 parentNode.setLeftChild(succesor);
-            }else{
+            } else {
                 parentNode.setRightChild(succesor);
             }
 
@@ -276,8 +267,9 @@ public class StudentSet implements Set<Student> {
 
         return false;
     }
-    private void clearTree( Node current){
-        if(current==null){
+
+    private void clearTree(Node current) {
+        if (current == null) {
             return;
         }
         clearTree(current.getLeftChild());
