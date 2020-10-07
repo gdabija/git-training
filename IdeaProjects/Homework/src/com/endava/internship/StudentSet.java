@@ -49,20 +49,20 @@ public class StudentSet implements Set<Student> {
             setRoot(node);
             return;
         }
-        if(node.getStudent().compareTo(root.getStudent())<0){ //Comparing the names of the student
-            if(root.getLeftChild()!=null){ //Look if we are not on a leaf
-                nodeInsert(node, root.getLeftChild()); // If this is not a laf,go further
+        if(node.getStudent().compareTo(parent.getStudent())<0){ //Comparing the names of the student
+            if(parent.getLeftChild()!=null){ //Look if we are not on a leaf
+                nodeInsert(node, parent.getLeftChild()); // If this is not a laf,go further
             }
             else{
 
-                root.setLeftChild(node);
+                parent.setLeftChild(node);
             }
         }
         else{
-            if(root.getRightChild()!=null){
-                nodeInsert(node, root.getRightChild());
+            if(parent.getRightChild()!=null){
+                nodeInsert(node, parent.getRightChild());
             }else{
-                root.setRightChild(node);
+                parent.setRightChild(node);
             }
         }
 
@@ -87,12 +87,15 @@ public class StudentSet implements Set<Student> {
     @Override
     public boolean contains(Object o) {
 
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null ) return false;
+        if(root == null) return false;
 
         Node currentNode = root;
         Student student = (Student) o;
-
-        while(currentNode!=null || !currentNode.getStudent().equals(student)) { // Searching until it finds the node or null
+        if(currentNode == null){
+            return false;
+        }
+        while(currentNode!=null || !currentNode.getStudent().equals(o)) { // Searching until it finds the node or null
             if (currentNode.getStudent().compareTo(student) < 0) {
 
                 currentNode = currentNode.getLeftChild(); // Updates the currentNode to continue searching
@@ -112,6 +115,7 @@ public class StudentSet implements Set<Student> {
 
     @Override
     public Iterator<Student> iterator() {
+
         return new ListIterator<Student>() {
             @Override
             public boolean hasNext() {
@@ -176,7 +180,8 @@ public class StudentSet implements Set<Student> {
     @Override
     public boolean add(Student student) {
         Node node = new Node(student, null, null); //Creates a new node
-        if(this.contains(node)) { // Search if it doesn't contain the node
+
+        if(this.contains(student)) { // Search if it doesn't contain the node
             return false;
         }
         this.nodeInsert(node,root);
@@ -245,7 +250,6 @@ public class StudentSet implements Set<Student> {
             succesor.setLeftChild(currentNode.getLeftChild());
         }
 
-
         return true;
     }
 
@@ -272,9 +276,20 @@ public class StudentSet implements Set<Student> {
 
         return false;
     }
+    private void clearTree( Node current){
+        if(current==null){
+            return;
+        }
+        clearTree(current.getLeftChild());
+        clearTree(current.getRightChild());
+        current = null;
+
+        return;
+    }
 
     @Override
     public void clear() {
 
+        clearTree(root);
     }
 }

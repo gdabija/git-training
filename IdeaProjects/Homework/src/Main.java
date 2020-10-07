@@ -19,5 +19,6 @@ public class Main {
         set.size();
         System.out.println(set.size());
         System.out.println(set.isEmpty());
+        System.out.println(set.contains(s1));
     }
 }
